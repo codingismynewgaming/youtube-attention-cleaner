@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Attention Cleaner",
+  "version": "1.0.0",
+  "description": "Grey out YouTube videos you've already scrolled past. Skip the repeats and focus on what's actually new.",
+  "author": "codingismynewgaming",
+  "homepage_url": "https://github.com/codingismynewgaming/youtube-attention-cleaner",
+  "license": "MIT",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["loader.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["content.js", "lib/*.js"],
+      "matches": ["https://www.youtube.com/*"]
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.svg",
+      "32": "icons/icon-32.svg",
+      "48": "icons/icon-48.svg",
+      "96": "icons/icon-96.svg"
+    },
+    "default_title": "YouTube Attention Cleaner"
+  },
+
+  "icons": {
+    "16": "icons/icon-16.svg",
+    "32": "icons/icon-32.svg",
+    "48": "icons/icon-48.svg",
+    "96": "icons/icon-96.svg"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-attention-cleaner@codingismynewgaming.github",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      },
+      "strict_min_version": "109.0"
+    }
+  }
+}

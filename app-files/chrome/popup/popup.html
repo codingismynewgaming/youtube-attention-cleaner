@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Attention Cleaner</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧹 Attention Cleaner</h1>
+      <p class="subtitle">Reduce YouTube feed fatigue</p>
+    </header>
+    
+    <section class="controls">
+      <!-- Master Toggle -->
+      <div class="control-row">
+        <label for="enabled-toggle">Enable Extension</label>
+        <input type="checkbox" id="enabled-toggle" checked>
+      </div>
+      
+    <!-- Grey Strength Slider -->
+    <div class="control-row">
+      <label for="strength-slider">Grey Strength</label>
+      <div class="slider-container">
+        <input type="range" id="strength-slider" min="0" max="100" value="75">
+        <input type="number" id="strength-input" min="0" max="100" value="75">
+        <span id="strength-value">75%</span>
+      </div>
+    </div>
+    </section>
+    
+    <section class="actions">
+      <button id="reset-btn" class="reset-button">
+        🗑️ Reset History
+      </button>
+    </section>
+    
+    <section class="status">
+      <div class="status-row">
+        <span>Greyed on this page:</span>
+        <span id="grey-count">0</span>
+      </div>
+      <div class="status-row">
+        <span>Total seen videos:</span>
+        <span id="total-seen">0</span>
+      </div>
+    </section>
+    
+    <footer>
+      <p class="hint">Videos turn grey after you scroll past them</p>
+      <p class="hint">Click "Reset" to clear all seen videos</p>
+    </footer>
+  </div>
+  
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
