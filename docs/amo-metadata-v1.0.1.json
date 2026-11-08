@@ -1,0 +1,9 @@
+{
+  "version": {
+    "license": "MIT",
+    "release_notes": {
+      "de": "Menüüberlagerung, Mehrtab-Speicherung, Shorts-Timer, wiederverwendete Kacheln, Öffnungsabsicht, Reset und Popup korrigiert. Gezielte Beobachter ersetzen Komplettscans; inaktive Tabs pausieren. Bestehende Historie wird übernommen.",
+      "en-US": "Fixed overlapping menus, multi-tab history writes, Shorts timing, recycled cards, watch intent, reset and popup behaviour. Targeted observers replace full-page polling; hidden tabs pause. Existing history is migrated."
+    }
+  }
+}

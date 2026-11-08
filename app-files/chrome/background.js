@@ -1,132 +1,167 @@
 /**
- * Background service worker — Chrome/Edge build
- * All imports inlined (Chrome MV3 service workers do not support ES modules)
+ * Single owner for persistent history, preferences, watch intent and badge state.
  */
+import { extractVideoId } from './lib/urls.js';
+import {
+  addSeenVideo, addWatchIntent, getPrefs, getTrackingState, resetSeenVideos, savePrefs
+} from './lib/storage.js';
 
-// ── Shim ──────────────────────────────────────────────────────────────
 if (typeof globalThis.browser === 'undefined' && typeof chrome !== 'undefined') {
   globalThis.browser = chrome;
 }
 
-// ── Inlined from lib/urls.js ──────────────────────────────────────────
-function isValidVideoId(id) {
-  return typeof id === 'string' && /^[A-Za-z0-9_-]{11}$/.test(id);
-}
-
-function extractVideoId(url) {
-  if (!url) return null;
-  try {
-    const parsed = new URL(url, 'https://www.youtube.com');
-    const isYT = parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com';
-    const isShort = parsed.hostname === 'youtu.be';
-    if (!isYT && !isShort) return null;
-
-    if (parsed.pathname === '/watch') {
-      const v = parsed.searchParams.get('v');
-      return isValidVideoId(v) ? v : null;
-    }
-    if (parsed.pathname.startsWith('/shorts/')) {
-      const [, , id] = parsed.pathname.split('/');
-      return isValidVideoId(id) ? id : null;
-    }
-    if (isShort) {
-      const id = parsed.pathname.replace(/^\/+/, '').split('/')[0];
-      return isValidVideoId(id) ? id : null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-// ── Inlined from lib/storage.js (only what background needs) ──────────
-const PREFS_KEY = 'prefs';
-const WATCH_INTENT_KEY = 'watchIntent';
-const DEFAULT_PREFS = { enabled: true, greyStrength: 75 };
-
-async function getPrefs() {
-  try {
-    const result = await browser.storage.local.get(PREFS_KEY);
-    return { ...DEFAULT_PREFS, ...(result[PREFS_KEY] || {}) };
-  } catch {
-    return DEFAULT_PREFS;
-  }
-}
-
-async function addWatchIntent(videoId) {
-  try {
-    const result = await browser.storage.local.get(WATCH_INTENT_KEY);
-    const intents = result[WATCH_INTENT_KEY] || {};
-    intents[videoId] = { markedAt: Date.now() };
-    await browser.storage.local.set({ [WATCH_INTENT_KEY]: intents });
-  } catch (e) {
-    console.error('[YAC Storage] Failed to add watch intent:', e);
-  }
-}
-
-// ── Service worker logic ──────────────────────────────────────────────
 const tabGreyCounts = new Map();
+const VIDEO_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
+
+function isYouTubePage(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && parsed.hostname === 'www.youtube.com';
+  } catch {
+    return false;
+  }
+}
+
+function isExtensionPage(url) {
+  return typeof url === 'string' && url.startsWith(browser.runtime.getURL(''));
+}
+
+function senderAllowed(sender) {
+  return sender?.id === browser.runtime.id &&
+    (!sender.tab || isYouTubePage(sender.tab.url) || isExtensionPage(sender.tab.url));
+}
+
+function fromExtensionPage(sender) {
+  return senderAllowed(sender) &&
+    (isExtensionPage(sender.url) || isExtensionPage(sender.tab?.url));
+}
 
 async function updateBadge(tabId, count) {
   try {
     const prefs = await getPrefs();
-    if (!prefs.enabled) {
-      await browser.action.setBadgeText({ text: '', tabId });
-      return;
-    }
     await browser.action.setBadgeText({
-      text: count > 0 ? count.toString() : '',
-      tabId
+      tabId,
+      text: prefs.enabled && count > 0 ? String(Math.min(count, 999)) : ''
     });
-    await browser.action.setBadgeBackgroundColor({ color: '#CC0000', tabId });
-  } catch (e) {
-    console.error('[YAC Background] Failed to update badge:', e);
+    if (prefs.enabled && count > 0) {
+      await browser.action.setBadgeBackgroundColor({ color: '#CC0000', tabId });
+    }
+  } catch (error) {
+    console.warn('[YAC] Badge update failed:', error);
   }
 }
 
+async function broadcast(message) {
+  const tabs = await browser.tabs.query({ url: 'https://www.youtube.com/*' });
+  await Promise.allSettled(tabs.map(tab =>
+    browser.tabs.sendMessage(tab.id, message)
+  ));
+}
+
+function responseError(error) {
+  console.error('[YAC] Background request failed:', error);
+  return { ok: false, error: error instanceof TypeError ? 'invalid_request' : 'storage_error' };
+}
+
 browser.runtime.onMessage.addListener((message, sender) => {
-  if (message.type === 'PREFS_CHANGED') {
-    browser.tabs.query({ url: 'https://www.youtube.com/*' }).then(tabs => {
-      tabs.forEach(tab => {
-        const count = tabGreyCounts.get(tab.id) || 0;
-        updateBadge(tab.id, count);
-      });
-    });
+  if (!senderAllowed(sender) || !message || typeof message.type !== 'string') {
+    return Promise.resolve({ ok: false, error: 'invalid_sender' });
   }
-  if (message.type === 'GREY_COUNT_UPDATE' && sender.tab) {
-    tabGreyCounts.set(sender.tab.id, message.count);
-    updateBadge(sender.tab.id, message.count);
-  }
-  if (message.type === 'WATCH_INTENT' && message.videoId) {
-    addWatchIntent(message.videoId);
-  }
-  if (message.type === 'RESET_SEEN_VIDEOS') {
-    console.log('[YAC Background] Reset requested from popup');
-  }
-  return Promise.resolve();
+
+  return (async () => {
+    switch (message.type) {
+      case 'GET_STATE':
+        return { ok: true, ...(await getTrackingState()) };
+
+      case 'MARK_SEEN': {
+        if (!sender.tab || !isYouTubePage(sender.tab.url) ||
+            !VIDEO_ID_PATTERN.test(message.videoId)) {
+          return { ok: false, error: 'invalid_request' };
+        }
+        const result = await addSeenVideo(message.videoId, message.generation);
+        return { ok: true, ...result };
+      }
+
+      case 'WATCH_INTENT': {
+        if (!sender.tab || !isYouTubePage(sender.tab.url) ||
+            !VIDEO_ID_PATTERN.test(message.videoId)) {
+          return { ok: false, error: 'invalid_request' };
+        }
+        const result = await addWatchIntent(message.videoId);
+        return { ok: true, ...result };
+      }
+
+      case 'SAVE_PREFS': {
+        if (!fromExtensionPage(sender)) return { ok: false, error: 'invalid_sender' };
+        const prefs = await savePrefs(message.prefs);
+        await broadcast({ type: 'PREFS_CHANGED', prefs });
+        await Promise.allSettled([...tabGreyCounts].map(([tabId, count]) =>
+          updateBadge(tabId, count)
+        ));
+        return { ok: true, prefs };
+      }
+
+      case 'RESET_SEEN_VIDEOS': {
+        if (!fromExtensionPage(sender)) return { ok: false, error: 'invalid_sender' };
+        const result = await resetSeenVideos();
+        tabGreyCounts.clear();
+        await broadcast({ type: 'HISTORY_RESET', generation: result.generation });
+        return { ok: true, ...result };
+      }
+
+      case 'GREY_COUNT_UPDATE': {
+        if (!sender.tab || !Number.isInteger(message.count) || message.count < 0) {
+          return { ok: false, error: 'invalid_request' };
+        }
+        tabGreyCounts.set(sender.tab.id, message.count);
+        await updateBadge(sender.tab.id, message.count);
+        return { ok: true };
+      }
+
+      case 'GET_TAB_COUNT': {
+        if (!fromExtensionPage(sender) || !Number.isInteger(message.tabId)) {
+          return { ok: false, error: 'invalid_request' };
+        }
+        if (tabGreyCounts.has(message.tabId)) {
+          return { ok: true, count: tabGreyCounts.get(message.tabId) };
+        }
+        try {
+          const reply = await browser.tabs.sendMessage(message.tabId, { type: 'GET_GREY_COUNT' });
+          if (Number.isInteger(reply?.count) && reply.count >= 0) {
+            tabGreyCounts.set(message.tabId, reply.count);
+            return { ok: true, count: reply.count };
+          }
+        } catch {
+          // The active tab may not have a content script yet.
+        }
+        return { ok: true, count: 0 };
+      }
+
+      default:
+        return { ok: false, error: 'unknown_request' };
+    }
+  })().catch(responseError);
 });
 
-browser.webNavigation.onCommitted.addListener(async (details) => {
-  if (details.frameId !== 0) return;
-  const url = details.url;
-  if (url.includes('/watch')) {
-    const videoId = extractVideoId(url);
-    if (videoId) {
-      console.log('[YAC Background] 🎬 Watch intent via navigation:', videoId);
-      await addWatchIntent(videoId);
-    }
+browser.webNavigation.onCommitted.addListener(async details => {
+  if (details.frameId !== 0 || !isYouTubePage(details.url)) return;
+  const parsed = new URL(details.url);
+  if (parsed.pathname !== '/watch') return;
+  const videoId = extractVideoId(details.url);
+  if (!videoId) return;
+  try {
+    await addWatchIntent(videoId);
+  } catch (error) {
+    console.error('[YAC] Navigation watch intent failed:', error);
   }
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url?.includes('youtube.com')) {
-    tabGreyCounts.set(tabId, 0);
-    updateBadge(tabId, 0);
-  }
+  if (changeInfo.status !== 'loading' || !isYouTubePage(tab.url)) return;
+  tabGreyCounts.set(tabId, 0);
+  updateBadge(tabId, 0);
 });
 
-browser.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener(tabId => {
   tabGreyCounts.delete(tabId);
 });
-
-console.log('[YAC Background] Service worker initialized');

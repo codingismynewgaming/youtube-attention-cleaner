@@ -3,3 +3,11 @@
 !README.md
 !app-files/
 !app-files/**
+!scripts/
+!scripts/*.test.mjs
+!scripts/*-smoke.py
+!docs/
+!docs/*.md
+!docs/amo-*.json
+!projektinfo.md
+!status.md

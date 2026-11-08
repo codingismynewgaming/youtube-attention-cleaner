@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YouTube Attention Cleaner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Grey out YouTube videos you've already scrolled past. Skip the repeats and focus on what's actually new.",
   "author": "codingismynewgaming",
   "homepage_url": "https://github.com/codingismynewgaming/youtube-attention-cleaner",
@@ -14,7 +14,6 @@
 
   "permissions": [
     "storage",
-    "clipboardWrite",
     "tabs",
     "webNavigation"
   ],
@@ -24,21 +23,21 @@
   ],
 
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
 
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["content.js"],
-      "type": "module",
+      "js": ["loader.js"],
       "run_at": "document_idle"
     }
   ],
 
   "web_accessible_resources": [
     {
-      "resources": ["lib/*.js"],
+      "resources": ["content.js", "lib/*.js"],
       "matches": ["https://www.youtube.com/*"]
     }
   ],
