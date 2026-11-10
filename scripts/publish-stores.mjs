@@ -155,17 +155,9 @@ async function uploadEdge(zipPath) {
   }
 }
 
-function getWebExtCommand() {
-  const localNpmCmd = join(process.env.APPDATA || '', 'npm', 'web-ext.cmd');
-  if (existsSync(localNpmCmd)) {
-    return `"${localNpmCmd}"`;
-  }
-  return 'npx --yes web-ext';
-}
-
 function uploadFirefox() {
-  const issuer = process.env.AMO_JWT_ISSUER;
-  const secret = process.env.AMO_JWT_SECRET;
+  const issuer = (process.env.AMO_JWT_ISSUER || '').trim();
+  const secret = (process.env.AMO_JWT_SECRET || '').trim();
 
   if (!issuer || !secret) {
     console.warn('[Firefox] Skipping AMO sign: AMO_JWT_ISSUER or AMO_JWT_SECRET not set.');
@@ -180,8 +172,84 @@ function uploadFirefox() {
   });
 }
 
+async function checkAuth() {
+  console.log('[Auth Check] Testing credentials for all three stores...\n');
+
+  // Firefox
+  const amoIssuer = (process.env.AMO_JWT_ISSUER || '').trim();
+  const amoSecret = (process.env.AMO_JWT_SECRET || '').trim();
+  if (amoIssuer && amoSecret) {
+    console.log('✓ Firefox (AMO): API credentials configured (Issuer present).');
+  } else {
+    console.log('✗ Firefox (AMO): Missing AMO_JWT_ISSUER or AMO_JWT_SECRET.');
+  }
+
+  // Chrome
+  const chromeClientId = process.env.CHROME_CLIENT_ID;
+  const chromeClientSecret = process.env.CHROME_CLIENT_SECRET;
+  const chromeRefreshToken = process.env.CHROME_REFRESH_TOKEN;
+  if (chromeClientId && chromeClientSecret && chromeRefreshToken) {
+    try {
+      const res = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: chromeClientId,
+          client_secret: chromeClientSecret,
+          refresh_token: chromeRefreshToken,
+          grant_type: 'refresh_token'
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.access_token) {
+        console.log('✓ Chrome Web Store: OAuth2 token exchange successful.');
+      } else {
+        console.log(`✗ Chrome Web Store: Token exchange failed (${data.error || 'invalid credentials'}).`);
+      }
+    } catch (err) {
+      console.log(`✗ Chrome Web Store: Network error (${err.message}).`);
+    }
+  } else {
+    console.log('✗ Chrome Web Store: Missing CHROME_CLIENT_ID, CHROME_CLIENT_SECRET, or CHROME_REFRESH_TOKEN.');
+  }
+
+  // Edge
+  const edgeProductId = process.env.EDGE_PRODUCT_ID;
+  const edgeClientId = process.env.EDGE_CLIENT_ID;
+  const edgeClientSecret = process.env.EDGE_CLIENT_SECRET;
+  const edgeTenantId = process.env.EDGE_TENANT_ID;
+  if (edgeClientId && edgeClientSecret && edgeTenantId) {
+    try {
+      const res = await fetch(`https://login.microsoftonline.com/${edgeTenantId}/oauth2/v2.0/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: edgeClientId,
+          client_secret: edgeClientSecret,
+          scope: 'https://api.addons.microsoftedge.microsoft.com/.default',
+          grant_type: 'client_credentials'
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.access_token) {
+        console.log('✓ Microsoft Edge: Azure AD token acquisition successful.');
+      } else {
+        console.log(`✗ Microsoft Edge: Token acquisition failed (${data.error || 'invalid credentials'}).`);
+      }
+    } catch (err) {
+      console.log(`✗ Microsoft Edge: Network error (${err.message}).`);
+    }
+  } else {
+    console.log('✗ Microsoft Edge: Missing EDGE_PRODUCT_ID, EDGE_CLIENT_ID, EDGE_CLIENT_SECRET, or EDGE_TENANT_ID.');
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
+  if (args.includes('--check-auth')) {
+    await checkAuth();
+    return;
+  }
   const isBuildOnly = args.includes('--build-only') || args.length === 0;
   const targetIndex = args.indexOf('--target');
   const target = targetIndex !== -1 ? args[targetIndex + 1] : 'all';
