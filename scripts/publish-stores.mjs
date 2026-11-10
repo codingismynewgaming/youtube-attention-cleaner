@@ -11,6 +11,7 @@
  */
 
 import { execSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -244,8 +245,68 @@ async function checkAuth() {
   }
 }
 
+function createAmoJwt(issuer, secret) {
+  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({
+    iss: issuer,
+    jti: crypto.randomBytes(16).toString('hex'),
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 300
+  })).toString('base64url');
+  const sig = crypto.createHmac('sha256', secret).update(`${header}.${payload}`).digest('base64url');
+  return `${header}.${payload}.${sig}`;
+}
+
+async function updateAmoListing() {
+  const issuer = (process.env.AMO_JWT_ISSUER || '').trim();
+  const secret = (process.env.AMO_JWT_SECRET || '').trim();
+  if (!issuer || !secret) {
+    console.warn('[AMO Listing] Missing AMO_JWT_ISSUER or AMO_JWT_SECRET.');
+    return;
+  }
+  const jwt = createAmoJwt(issuer, secret);
+  const addonId = 'youtube-attention-cleaner@codingismynewgaming.github';
+  const listingData = JSON.parse(readFileSync(join(ROOT, 'docs', 'amo-listing-v1.1.0.json'), 'utf8'));
+
+  const payload = {
+    name: {
+      'en-US': listingData.name,
+      'de': listingData.name
+    },
+    summary: {
+      'en-US': listingData.summary['en-US'],
+      'de': listingData.summary['de']
+    },
+    description: {
+      'en-US': listingData.description['en-US'],
+      'de': listingData.description['de']
+    }
+  };
+
+  console.log(`[AMO Listing] Updating listing details on Mozilla Add-ons for ${addonId}...`);
+  const res = await fetch(`https://addons.mozilla.org/api/v5/addons/addon/${addonId}/`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `JWT ${jwt}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    console.warn('[AMO Listing] API response:', res.status, data);
+  } else {
+    console.log('[AMO Listing] Successfully updated AMO listing name to:', data.name);
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
+  if (args.includes('--update-amo-listing')) {
+    await updateAmoListing();
+    return;
+  }
   if (args.includes('--check-auth')) {
     await checkAuth();
     return;
