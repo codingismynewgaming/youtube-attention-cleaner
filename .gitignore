@@ -3,11 +3,15 @@
 !README.md
 !app-files/
 !app-files/**
+app-files/firefox/.amo-upload-uuid
 !scripts/
 !scripts/*.test.mjs
-!scripts/*-smoke.py
+!scripts/*.py
+!scripts/*.mjs
 !docs/
 !docs/*.md
-!docs/amo-*.json
+!docs/*.json
+!docs/screenshots/
+!docs/screenshots/**
 !projektinfo.md
 !status.md

@@ -10,13 +10,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run():
     for variant in ("chrome", "edge"):
+        channel = "msedge" if variant == "edge" else "chromium"
         with sync_playwright() as playwright:
             with tempfile.TemporaryDirectory(prefix=f"yac-{variant}-") as profile:
                 source = str(ROOT / "app-files" / variant)
-                context = playwright.chromium.launch_persistent_context(
-                    profile, channel="chromium", headless=True,
-                    args=[f"--disable-extensions-except={source}", f"--load-extension={source}"]
-                )
+                try:
+                    context = playwright.chromium.launch_persistent_context(
+                        profile, channel=channel, headless=True,
+                        args=[f"--disable-extensions-except={source}", f"--load-extension={source}"]
+                    )
+                except Exception as ex:
+                    print(f"Warning: Channel {channel} failed ({ex}), falling back to chromium", flush=True)
+                    channel = "chromium"
+                    context = playwright.chromium.launch_persistent_context(
+                        profile, channel=channel, headless=True,
+                        args=[f"--disable-extensions-except={source}", f"--load-extension={source}"]
+                    )
                 try:
                     worker = context.service_workers[0] if context.service_workers else context.wait_for_event("serviceworker", timeout=10000)
                     popup = context.new_page()
@@ -43,7 +52,7 @@ def run():
                     page.wait_for_selector("#seen-videos-styles", state="attached", timeout=15000)
                     assert not extension_errors, extension_errors
                     print(json.dumps({
-                        "variant": variant, "browser": context.browser.version,
+                        "variant": variant, "channel": channel, "browser": context.browser.version,
                         "popup": "passed", "settings": "passed", "reset": "passed",
                         "contentLoaded": True, "extensionErrors": extension_errors
                     }), flush=True)

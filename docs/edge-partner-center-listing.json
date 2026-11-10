@@ -1,0 +1,9 @@
+{
+  "name": "Dim + Filter Seen YouTube Videos",
+  "short_description": "Dim and filter YouTube videos you've already scrolled past. Skip repeats and focus on new content.",
+  "detailed_description": {
+    "en": "Dim + Filter Seen YouTube Videos helps you stay focused on YouTube by automatically detecting and dimming video cards you have already scrolled past.\n\nHighlights:\n- Automatic seen video detection and local tracking\n- Popup menu with adjustable dimming strength slider and reset button\n- Info & Support tab connecting to GitHub, Issues, Buy Me a Coffee, and PayPal\n- Strict privacy policy: No external tracking or remote code execution.",
+    "de": "Dim + Filter Seen YouTube Videos hilft dir, auf YouTube fokussiert zu bleiben, indem bereits gesehene Videokarten automatisch erkannt und abgeblendet werden.\n\nHighlights:\n- Automatische Erkennung und lokale Speicherung gesehener Videos\n- Popup-Menü mit einstellbarem Schieberegler für die Abblendstärke und Reset\n- Info- & Support-Tab mit Verknüpfungen zu GitHub, Issues, Buy Me a Coffee und PayPal\n- Strenger Datenschutz: Kein externes Tracking oder Remotecode."
+  },
+  "category": "Productivity"
+}

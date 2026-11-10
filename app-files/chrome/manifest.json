@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Attention Cleaner",
-  "version": "1.0.1",
-  "description": "Grey out YouTube videos you've already scrolled past. Skip the repeats and focus on what's actually new.",
+  "name": "Dim + Filter Seen YouTube Videos",
+  "version": "1.1.0",
+  "description": "Dim and filter YouTube videos you've already scrolled past. Skip the repeats and focus on what's actually new.",
   "author": "codingismynewgaming",
   "homepage_url": "https://github.com/codingismynewgaming/youtube-attention-cleaner",
   "icons": {
@@ -50,6 +50,6 @@
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png"
     },
-    "default_title": "YouTube Attention Cleaner"
+    "default_title": "Dim + Filter Seen YouTube Videos"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "name": "Dim + Filter Seen YouTube Videos",
+  "short_description": "Dim and filter YouTube videos you've already scrolled past. Skip repeats and focus on new content.",
+  "detailed_description": {
+    "en": "Dim + Filter Seen YouTube Videos is a lightweight privacy-focused browser extension designed to reclaim your attention on YouTube.\n\nBy automatically tracking the video cards you scroll past, the extension subtly dims them so you can instantly spot fresh content and avoid endless repetitive loops.\n\nFeatures:\n- Automatic tracking of viewed YouTube feed and search items\n- Clean popup UI with adjustable dimming strength and instant reset\n- Built-in Info & Support tab with quick links to GitHub, Issue Tracker, Buy Me a Coffee, and PayPal\n- Complete privacy: 100% local storage, zero telemetry, no external servers, and no remote code.",
+    "de": "Dim + Filter Seen YouTube Videos ist eine datenschutzfreundliche Browser-Erweiterung, um deine Aufmerksamkeit auf YouTube zurückzugewinnen.\n\nDie Erweiterung erkennt automatisch, welche Videokarten du beim Scrollen bereits gesehen hast, und blendet sie dezent ab. So erkennst du frische Inhalte sofort und vermeidest Wiederholungen.\n\nFunktionen:\n- Automatische Erkennung gelesener YouTube-Feeds und Suchergebnisse\n- Klares Popup mit einstellbarer Abblendstärke und Sofort-Reset\n- Integrierter Info- & Support-Tab mit Direktlinks zu GitHub, Issues, Buy Me a Coffee und PayPal\n- Volkommener Datenschutz: 100% lokale Speicherung, keine Telemetrie, keine externen Server."
+  },
+  "store_item_id": "f3ae853b-1b15-463c-8707-bc8e9d3ffbc2",
+  "category": "Productivity"
+}

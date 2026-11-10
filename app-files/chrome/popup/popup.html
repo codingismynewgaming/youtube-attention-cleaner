@@ -3,56 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Attention Cleaner</title>
+  <title>Dim + Filter Seen YouTube Videos</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🧹 Attention Cleaner</h1>
-      <p class="subtitle">Reduce YouTube feed fatigue</p>
-    </header>
-    
-    <section class="controls">
-      <!-- Master Toggle -->
-      <div class="control-row">
-        <label for="enabled-toggle">Enable Extension</label>
-        <input type="checkbox" id="enabled-toggle" checked>
-      </div>
+    <nav class="tabs" role="tablist">
+      <button id="tab-settings" class="tab-button active" role="tab" aria-selected="true" aria-controls="panel-settings">Settings</button>
+      <button id="tab-info" class="tab-button" role="tab" aria-selected="false" aria-controls="panel-info">Info</button>
+    </nav>
+
+    <div id="panel-settings" class="tab-panel active" role="tabpanel" aria-labelledby="tab-settings">
+      <header>
+        <h1>🧹 Dim + Filter</h1>
+        <p class="subtitle">Reduce YouTube feed fatigue</p>
+      </header>
       
-    <!-- Grey Strength Slider -->
-    <div class="control-row">
-      <label for="strength-slider">Grey Strength</label>
-      <div class="slider-container">
-        <input type="range" id="strength-slider" min="0" max="100" value="75">
-        <input type="number" id="strength-input" min="0" max="100" value="75">
-        <span id="strength-value">75%</span>
+      <section class="controls">
+        <!-- Master Toggle -->
+        <div class="control-row">
+          <label for="enabled-toggle">Enable Extension</label>
+          <input type="checkbox" id="enabled-toggle" checked>
+        </div>
+        
+        <!-- Grey Strength Slider -->
+        <div class="control-row">
+          <label for="strength-slider">Grey Strength</label>
+          <div class="slider-container">
+            <input type="range" id="strength-slider" min="0" max="100" value="75">
+            <input type="number" id="strength-input" min="0" max="100" value="75">
+            <span id="strength-value">75%</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="actions">
+        <button id="reset-btn" class="reset-button">
+          🗑️ Reset History
+        </button>
+        <p id="status-message" role="status" aria-live="polite"></p>
+      </section>
+      
+      <section class="status">
+        <div class="status-row">
+          <span>Greyed on this page:</span>
+          <span id="grey-count">0</span>
+        </div>
+        <div class="status-row">
+          <span>Total seen videos:</span>
+          <span id="total-seen">0</span>
+        </div>
+      </section>
+      
+      <footer>
+        <p class="hint">Videos turn grey after you scroll past them</p>
+        <p class="hint">Click "Reset" to clear all seen videos</p>
+      </footer>
+    </div>
+
+    <div id="panel-info" class="tab-panel" role="tabpanel" aria-labelledby="tab-info">
+      <p class="donation-message">Enjoying this extension? Instead of sending me your Bitcoins, just buy me a coffee or send a donation via PayPal.</p>
+      <div class="donation-buttons">
+        <a id="btn-issue" class="ext-btn btn-green" href="https://github.com/codingismynewgaming/youtube-attention-cleaner/issues" target="_blank" rel="noopener noreferrer">Submit issue / request feature</a>
+        <a id="btn-coffee" class="ext-btn btn-yellow" href="https://buymeacoffee.com/codingiymynewgaming" target="_blank" rel="noopener noreferrer">Buy me a coffee</a>
+        <a id="btn-paypal" class="ext-btn btn-blue" href="https://www.paypal.com/donate/?hosted_button_id=ZXHJFTUW9NQK8" target="_blank" rel="noopener noreferrer">Donate via PayPal</a>
+        <a id="btn-github" class="ext-btn btn-dark" href="https://github.com/codingismynewgaming/youtube-attention-cleaner" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
-    </section>
-    
-    <section class="actions">
-      <button id="reset-btn" class="reset-button">
-        🗑️ Reset History
-      </button>
-      <p id="status-message" role="status" aria-live="polite"></p>
-    </section>
-    
-    <section class="status">
-      <div class="status-row">
-        <span>Greyed on this page:</span>
-        <span id="grey-count">0</span>
-      </div>
-      <div class="status-row">
-        <span>Total seen videos:</span>
-        <span id="total-seen">0</span>
-      </div>
-    </section>
-    
-    <footer>
-      <p class="hint">Videos turn grey after you scroll past them</p>
-      <p class="hint">Click "Reset" to clear all seen videos</p>
-    </footer>
   </div>
   
   <script type="module" src="popup.js"></script>

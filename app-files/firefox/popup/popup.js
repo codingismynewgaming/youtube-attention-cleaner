@@ -18,7 +18,11 @@ const controls = {
   greyCount: document.getElementById('grey-count'),
   totalSeen: document.getElementById('total-seen'),
   reset: document.getElementById('reset-btn'),
-  status: document.getElementById('status-message')
+  status: document.getElementById('status-message'),
+  tabSettings: document.getElementById('tab-settings'),
+  tabInfo: document.getElementById('tab-info'),
+  panelSettings: document.getElementById('panel-settings'),
+  panelInfo: document.getElementById('panel-info')
 };
 
 async function request(type, details = {}) {
@@ -55,6 +59,24 @@ function queueSave() {
   pendingSave = { ...prefs };
   if (!saveTask) {
     saveTask = drainSaves();
+  }
+}
+
+function switchTab(target) {
+  const isSettings = target === 'settings';
+  if (controls.tabSettings) {
+    controls.tabSettings.classList.toggle('active', isSettings);
+    controls.tabSettings.setAttribute('aria-selected', String(isSettings));
+  }
+  if (controls.tabInfo) {
+    controls.tabInfo.classList.toggle('active', !isSettings);
+    controls.tabInfo.setAttribute('aria-selected', String(!isSettings));
+  }
+  if (controls.panelSettings) {
+    controls.panelSettings.classList.toggle('active', isSettings);
+  }
+  if (controls.panelInfo) {
+    controls.panelInfo.classList.toggle('active', !isSettings);
   }
 }
 
@@ -131,6 +153,9 @@ async function init() {
   await refreshState();
   await refreshTabCount();
 
+  controls.tabSettings?.addEventListener('click', () => switchTab('settings'));
+  controls.tabInfo?.addEventListener('click', () => switchTab('info'));
+
   controls.enabled.addEventListener('change', () => {
     prefs.enabled = controls.enabled.checked;
     renderPrefs();
@@ -140,6 +165,20 @@ async function init() {
   controls.strength.addEventListener('input', () => setStrength(controls.strength.value));
   controls.strength.addEventListener('blur', renderPrefs);
   controls.reset.addEventListener('click', resetHistory);
+
+  document.querySelectorAll?.('a[href]')?.forEach?.(link => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const href = link.getAttribute('href');
+      if (href) {
+        if (api.tabs?.create) {
+          api.tabs.create({ url: href });
+        } else if (typeof window !== 'undefined' && window.open) {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        }
+      }
+    });
+  });
 
   api.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
