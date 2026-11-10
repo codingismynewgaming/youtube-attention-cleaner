@@ -6,100 +6,69 @@
 
 ## Deutsch
 
-**Dim + Filter Seen YouTube Videos** blendet Videokacheln ab, an denen du bereits vorbeigescrollt bist. So fallen neue Empfehlungen leichter auf und Wiederholungen im Feed werden reduziert. Die Erweiterung entfernt keine Videos und verändert YouTubes Empfehlungsalgorithmus nicht.
+Kennst du das? Du bist auf YouTube unterwegs und siehst im Feed immer wieder dieselben Empfehlungen, an denen du längst vorbeigescrollt bist. Der Algorithmus zeigt sie dir trotzdem noch fünfmal.
 
-### Verhalten
+Genau da setzt diese Erweiterung an. Sie blockiert nichts weg und fummelt nicht an YouTubes Empfehlungslogik herum. Stattdessen macht sie etwas ganz Pragmatisches: Sobald eine Videokachel kurz sichtbar war und du daran vorbeigescrollt bist, wird sie dezent abgeblendet. Neue Videos stechen sofort ins Auge, Wiederholungen treten in den Hintergrund.
 
-- Startseite, Abos und Suchergebnisse: Eine Kachel muss mindestens zwei Sekunden vollständig sichtbar sein und danach mindestens zwei Sekunden vollständig außerhalb des sichtbaren Bereichs liegen. Erst dann wird sie als gesehen gespeichert.
-- Auf der Videoseite werden bereits bekannte Empfehlungen in der Seitenleiste abgeblendet. Der Hauptplayer bleibt unverändert.
-- Ein geöffnetes Short wird nach zwei aktiven Sekunden erfasst.
-- Wenn du ein normales Video gezielt öffnest, wird es von der Ausblendung ausgenommen.
-- In ausgeblendeten Tabs pausiert die Erfassung. Angebrochene Erfassungszeiten beginnen beim Zurückkehren neu.
-- Das Popup bietet zwei Reiter: **Settings** (Stärke von 0 bis 100 %, Ein-/Ausschalten, Verlauf zurücksetzen) und **Info** (Feedback- und Spendenlinks).
-- Menüs bleiben über abgeblendeten Videos sichtbar und bedienbar.
+### Wie es funktioniert
+
+- **Smarte Erkennung**: Eine Kachel muss mindestens zwei Sekunden im Bild und danach zwei Sekunden aus dem Bild sein, bevor sie als gesehen gilt. Kein hektisches Flackern beim schnellen Durchscrollen.
+- **Echte Klicks bleiben klar**: Videos, die du gezielt anklickst und anschaust, werden natürlich nicht ausgegraut.
+- **Seitenleiste & Shorts**: Greift auf der Startseite, in den Abos, in den Suchergebnissen und bei Empfehlungen neben dem Video.
+- **Volle Kontrolle im Popup**: Schieberegler für die Abblendstärke (0 bis 100 %), Hauptschalter und Verlauf per Klick zurücksetzen.
+- **Info- & Support-Tab**: Schneller Draht zu GitHub-Issues und Kaffeekasse, falls dir das Tool im Alltag Zeit spart.
 
 ### Support & Spenden
 
-Gefällt dir diese Erweiterung? Statt Bitcoins freue ich mich über einen Kaffee oder eine kleine Spende:
+Gefällt dir das Tool? Statt Bitcoins freue ich mich über einen Kaffee oder eine kleine Unterstützung:
 
 - 🐛 [Submit issue / request feature](https://github.com/codingismynewgaming/youtube-attention-cleaner/issues)
 - ☕ [Buy me a coffee](https://buymeacoffee.com/codingiymynewgaming)
 - 💳 [Donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=ZXHJFTUW9NQK8)
 - 💻 [GitHub Repository](https://github.com/codingismynewgaming/youtube-attention-cleaner)
 
-### Datenschutz und Speicherung
+### Datenschutz
 
-Keine Analyse-Dienste, keine eigenen externen Server und kein zusätzliches Konto. Einstellungen, Video-IDs und Zeitstempel bleiben im lokalen Erweiterungsspeicher des Browsers. Verlauf und Öffnungsabsichten laufen nach 65 Tagen ab; abgelaufene Einträge werden bei der Bereinigung entfernt. Über „Reset History“ lässt sich der Verlauf löschen.
-
-YouTube selbst kann unabhängig von dieser Erweiterung Daten verarbeiten. Anmelden ist nur für personalisierte YouTube-Inhalte und Abos erforderlich.
-
-### Browser und Installation
-
-- **Firefox**: Eintrag auf [Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/youtube-attention-cleaner/). Quellversion: 1.1.0 (erfordert Firefox 112+).
-- **Chrome & Edge**: Quellen liegen in `app-files/chrome` und `app-files/edge` bereit.
-
-Für einen lokalen Firefox-Test: In einem separaten Testprofil `about:debugging#/runtime/this-firefox` öffnen, „Temporäres Add-on laden“ wählen und `app-files/firefox/manifest.json` oder das vorbereitete Testpaket auswählen.
-
-### Entwicklung und Prüfungen
-
-Keine externen Laufzeitabhängigkeiten erforderlich. Die Tests verwenden Node.js mit dem integrierten Test-Runner:
-
-```powershell
-node --experimental-test-isolation=none --test scripts/*.test.mjs
-npx web-ext lint --source-dir app-files/firefox
-node scripts/publish-stores.mjs --build-only
-```
-
-Integrationstests:
-```powershell
-python scripts/firefox-smoke.py
-python scripts/chromium-smoke.py
-```
+Keine Analyse-Dienste, keine externen Server und kein Account nötig. Alle IDs, Zeitstempel und Einstellungen bleiben ausschließlich im lokalen Speicher deines Browsers und laufen nach 65 Tagen automatisch ab.
 
 ---
 
 ## English
 
-**Dim + Filter Seen YouTube Videos** dims video cards you have already scrolled past, making new recommendations easier to spot and reducing feed fatigue. It does not remove videos or change YouTube's recommendation algorithm.
+Ever notice how YouTube keeps serving you the exact same video recommendations you decided not to click five minutes ago? You keep scrolling past them, and they keep showing up.
 
-### Behaviour
+This extension solves that without any heavy-handed blocking or messing with YouTube's recommendation algorithm. It does one practical thing: once you've genuinely scrolled past a video tile, it dims it down. New recommendations pop out at a glance; repeats fade quietly into the background.
 
-- On Home, Subscriptions and Search, a card must be fully visible for at least two seconds, then fully outside the viewport for at least two seconds, before it is saved as seen.
-- Previously seen recommendations are dimmed in the Watch sidebar. The main player is left unchanged.
-- An opened Short is recorded after two active seconds.
-- Regular videos you intentionally open are excluded from dimming.
-- Tracking pauses in hidden tabs. Incomplete timing starts over when you return.
-- The popup features two tabs: **Settings** (strength slider 0–100%, toggle switch, reset history) and **Info** (direct support and donation links).
-- Menus remain visible and usable above dimmed cards.
+### How it works
+
+- **Smart visibility checks**: A video card must be visible for at least two seconds and then scrolled out of view for two seconds before it's marked as seen. Fast scrolling won't accidentally dim anything.
+- **Videos you actually watch stay clear**: Clicking and watching a video prevents it from getting dimmed.
+- **Works across YouTube**: Home feed, Subscriptions, Search results, and sidebar recommendations on watch pages.
+- **Simple popup controls**: Dial in your preferred dim strength from 0 to 100%, toggle off when needed, or wipe history in one click.
+- **Info & Support tab**: Quick links to report issues on GitHub or buy a coffee if it saves you daily screen frustration.
 
 ### Support & Donations
 
-Enjoying this extension? Instead of sending me your Bitcoins, just buy me a coffee or send a donation via PayPal:
+Enjoying this tool? Instead of sending Bitcoins, buy me a coffee or support development:
 
 - 🐛 [Submit issue / request feature](https://github.com/codingismynewgaming/youtube-attention-cleaner/issues)
 - ☕ [Buy me a coffee](https://buymeacoffee.com/codingiymynewgaming)
 - 💳 [Donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=ZXHJFTUW9NQK8)
 - 💻 [GitHub Repository](https://github.com/codingismynewgaming/youtube-attention-cleaner)
 
-### Privacy and storage
+### Privacy
 
-No analytics, no external servers operated by the extension and no additional account. Preferences, video IDs and timestamps stay in the browser's local extension storage. History and watch intent expire after 65 days; expired records are removed during cleanup. Use “Reset History” to clear them.
+No tracking, no analytics, no external servers, and no account required. Everything stays in your browser's local storage and expires automatically after 65 days.
 
-YouTube may process data independently of this extension. Signing in is only needed for personalized YouTube content and subscriptions.
+### Installation & Development
 
-### Browsers and development
+- **Firefox**: [Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/youtube-attention-cleaner/)
+- **Chrome & Edge**: Packages available in `builds/` and sources in `app-files/chrome` and `app-files/edge`.
 
-- **Firefox**: Public listing on [Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/youtube-attention-cleaner/). Source version: 1.1.0 (requires Firefox 112+).
-- **Chrome & Microsoft Edge**: Sources maintained in `app-files/chrome` and `app-files/edge`.
-
-### Project structure
-
-- `app-files/firefox/`: Firefox extension source.
-- `app-files/chrome/`: Chrome extension source.
-- `app-files/edge/`: Edge extension source.
-- `scripts/`: Regression, smoke and release automation scripts.
-- `docs/`: Store metadata, permission justification, screenshots and release notes.
-- `builds/`: Local release zip packages.
+Run local regression tests:
+```powershell
+node --experimental-test-isolation=none --test scripts/*.test.mjs
+```
 
 ## License
 
