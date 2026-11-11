@@ -41,7 +41,7 @@ Frische Empfehlungen stechen sofort heraus, Wiederholungen treten in den Hinterg
 
 Kennst du das? Du machst YouTube auf, scrollst durch den Feed, und fünf Minuten später stehen da schon wieder genau die gleichen Videos, an denen du längst vorbeigescrollt bist. Der Algorithmus wirft sie dir trotzdem noch fünfmal vor die Füße.
 
-Es geht mir hier nicht darum, YouTube umzubauen oder Empfehlungen komplett wegzublocken. Die Idee ist viel simpler: Sobald eine Videokachel wirklich kurz sichtbar war und du an ihr vorbeigescrollt bist, blendet sie sich dezent ab. Was du schon gesehen hast, tritt in den Hintergrund. Neue Videos fallen sofort ins Auge.
+Das kann nicht wahr sein!!!
 
 ### Was steckt drin?
 
@@ -55,7 +55,7 @@ Es geht mir hier nicht darum, YouTube umzubauen oder Empfehlungen komplett wegzu
 
 Keine Tracker, keine Analyse-Dienste, keine externen Server und kein Account. Alle Video-IDs, Zeitstempel und Einstellungen bleiben ausschließlich im lokalen Speicher deines Browsers und laufen nach 65 Tagen automatisch ab.
 
-### Support & Kaffee
+### Support & Käffchen
 
 Wenn dir die Erweiterung im Alltag Nerven spart, freue ich mich über Feedback oder einen Kaffee statt Bitcoins:
 
@@ -93,15 +93,6 @@ Enjoying this tool? Instead of sending Bitcoins, feel free to leave feedback or 
 - 💳 [Donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=ZXHJFTUW9NQK8)
 - 💻 [GitHub Repository](https://github.com/codingismynewgaming/youtube-attention-cleaner)
 
----
-
-## Entwicklung & Tests
-
-Die Browser-Quellen liegen unter `app-files/chrome`, `app-files/edge` und `app-files/firefox`. Lokale Regressionstests laufen mit Node:
-
-```powershell
-node --experimental-test-isolation=none --test scripts/*.test.mjs
-```
 
 ## Lizenz
 
