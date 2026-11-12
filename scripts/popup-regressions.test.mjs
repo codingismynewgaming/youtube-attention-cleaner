@@ -142,7 +142,7 @@ test('three browser variants use the same popup and valid module loaders', () =>
     const base = resolve(root, 'app-files', variant);
     assert.equal(readFileSync(resolve(base, 'popup/popup.js'), 'utf8'), popupSource);
     const manifest = JSON.parse(readFileSync(resolve(base, 'manifest.json'), 'utf8'));
-    assert.equal(manifest.version, '1.1.0');
+    assert.equal(manifest.version, '1.1.1');
     assert.equal(manifest.name, 'Dim + Filter Seen YouTube Videos');
     assert.deepEqual(manifest.content_scripts[0].js, ['loader.js']);
     assert.equal(manifest.content_scripts[0].type, undefined);
