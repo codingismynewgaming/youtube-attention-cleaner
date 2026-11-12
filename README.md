@@ -28,13 +28,9 @@ YouTube puts the same videos back in front of you, even after you already scroll
 
 ## Demo
 
-*GIF placeholder:* add a short loop at `docs/screenshots/demo-before-after.gif`. Record the Home feed, linger on a row, scroll away, come back, and show the same tiles dimmed. Keep it to a few seconds. No captions baked into the frame if you can help it; the alt text can do the explaining.
-
-<!-- Once the file exists, uncomment:
 <p align="center">
   <img src="docs/screenshots/demo-before-after.gif" alt="Home feed tiles dim after you scroll past them and return" width="720" />
 </p>
--->
 
 ## Screenshots
 
