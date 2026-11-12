@@ -1,6 +1,11 @@
 *
 !.gitignore
+!LICENSE
+!PRIVACY.md
 !README.md
+!.github/
+!.github/ISSUE_TEMPLATE/
+!.github/ISSUE_TEMPLATE/*.yml
 !app-files/
 !app-files/**
 app-files/firefox/.amo-upload-uuid

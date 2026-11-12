@@ -1,0 +1,17 @@
+name: Feature
+description: An idea for the extension
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What do you want
+      description: What should change, and why. Please keep it to one idea.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Where it shows up
+      description: Home, Subscriptions, Search, watch sidebar, Shorts, or the popup.
