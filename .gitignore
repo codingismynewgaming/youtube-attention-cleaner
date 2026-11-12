@@ -18,5 +18,7 @@ app-files/firefox/.amo-upload-uuid
 !docs/*.json
 !docs/screenshots/
 !docs/screenshots/**
+!docs/store-assets/
+!docs/store-assets/**
 !projektinfo.md
 !status.md
