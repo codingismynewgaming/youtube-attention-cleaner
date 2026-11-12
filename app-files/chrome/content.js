@@ -7,7 +7,7 @@ import { extractVideoId, classifyPage, isAllowedURL, shouldGreyOnPage, isPrimary
 import { isExpired } from './lib/storage.js';
 
 const api = globalThis.browser || globalThis.chrome;
-const TILE_SELECTOR = 'ytd-rich-item-renderer, ytd-rich-grid-media, ytd-video-renderer, ytd-grid-video-renderer, ytd-compact-video-renderer, ytd-compact-autoplay-renderer, ytd-reel-item-renderer, yt-lockup-view-model';
+const TILE_SELECTOR = 'ytd-rich-item-renderer, ytd-rich-grid-media, ytd-video-renderer, ytd-grid-video-renderer, ytd-compact-video-renderer, ytd-compact-autoplay-renderer, ytd-reel-item-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2';
 const TRACKING_PAGES = new Set(['home', 'subscriptions', 'search']);
 const VISIBLE_MS = 2000;
 const OUTSIDE_MS = 2000;

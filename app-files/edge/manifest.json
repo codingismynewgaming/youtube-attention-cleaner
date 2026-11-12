@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Dim + Filter Seen YouTube Videos",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Dims YouTube videos you already scrolled past, not necessarily ones you watched. Formerly YouTube Attention Cleaner. Local only.",
   "author": "codingismynewgaming",
   "homepage_url": "https://github.com/codingismynewgaming/youtube-attention-cleaner",
