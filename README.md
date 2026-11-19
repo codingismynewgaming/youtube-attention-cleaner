@@ -24,7 +24,7 @@ Dims YouTube tiles you already scrolled past, so new recommendations are easier 
 
 YouTube puts the same videos back in front of you, even after you already scrolled past them and decided not to click. This extension dims those tiles. It does not hide the homepage, strip the sidebar, or try to rewrite the recommender. The page stays intact. Repeats just take up less visual space.
 
-"Seen" here means you spent two seconds looking at a tile and then scrolled on. It does not mean you watched the video.
+"Seen" here means you spent two seconds looking at a tile and then scrolled on. It does not mean one watched the video.
 
 ## Demo
 
@@ -38,11 +38,7 @@ YouTube puts the same videos back in front of you, even after you already scroll
 | :---: | :---: | :---: |
 | <img src="docs/screenshots/screenshot-1-dimmed-feed.png" alt="YouTube Home feed with already-scrolled tiles dimmed" width="280" /> | <img src="docs/screenshots/screenshot-2-popup-settings.png" alt="Popup with dim-strength slider, enable switch, and reset" width="280" /> | <img src="docs/screenshots/screenshot-3-popup-info.png" alt="Popup info tab with support links" width="280" /> |
 
-Two more shots are planned and not in the repo yet: a watch page with a dimmed sidebar, and a Short that later appears dimmed in the Home feed.
-
 ## How it works
-
-The content script watches video tiles with `IntersectionObserver` and `MutationObserver`. It does not scan the page on an interval.
 
 On Home, Subscriptions, Search, and the watch sidebar, a tile is marked seen only if it stays in the viewport for at least two seconds and then stays out of the viewport for two seconds. Fast scrolling does not mark anything.
 
@@ -52,7 +48,7 @@ If you click or open a video, it is stored as watch intent and stays clear. The 
 
 Hidden or background tabs pause tracking, so a tile sitting in an unread tab is not silently marked.
 
-The dim itself is visual only: grayscale plus an overlay, with strength from 0 to 100%. Context menus still work. There is no mode that removes tiles from the layout. "Filter" in the name means this visual filter, not a hide-from-the-feed switch.
+The dim itself is visual only: grayscale plus an overlay, with strength from 0 to 100%.
 
 ## Features
 
@@ -64,7 +60,7 @@ The dim itself is visual only: grayscale plus an overlay, with strength from 0 t
 
 ## Where it works
 
-Chrome, Firefox, and Microsoft Edge, on `https://www.youtube.com/*`. Current store version is 1.1.0 in all three listings.
+Chrome, Firefox, and Microsoft Edge, on `https://www.youtube.com/*`.
 
 | Browser | Store |
 | :--- | :--- |
@@ -95,36 +91,15 @@ No. Unhook hides pieces of the YouTube UI, such as the homepage, Shorts, comment
 **Is this the same as a "hide watched" tool?**  
 Usually not. Those tools typically follow YouTube's watched or progress state. This one marks a tile when you have scrolled past it, even if you never opened the video. Videos you did open stay clear.
 
-**I used to search for YouTube Attention Cleaner.**  
-That was the previous name of this extension. The listings now use Dim + Filter Seen YouTube Videos.
-
 **Does "filter" mean tiles disappear from the feed?**  
 No. They stay in the layout and are only dimmed. If you want them gone from the page, this is not that tool.
 
 **Can I undo a dim or start over?**  
 Yes. Use Reset in the popup to clear seen and watch-intent history. Your dim strength stays.
 
-## Development
-
-The repo has three Manifest V3 packages, one per store, under `app-files/chrome`, `app-files/edge`, and `app-files/firefox`.
-
-From the repo root:
-
-```bash
-node --experimental-test-isolation=none --test scripts/*.test.mjs
-python scripts/firefox-smoke.py
-python scripts/chromium-smoke.py
-npx web-ext lint --source-dir app-files/firefox
-node scripts/publish-stores.mjs --build-only
-```
-
-`publish-stores.mjs --build-only` builds the store zips. It does not upload them.
-
 ## Contributing
 
-Bug reports and ideas are welcome in [Issues](https://github.com/codingismynewgaming/youtube-attention-cleaner/issues). For a larger change, open an issue first so the direction is clear.
-
-If you send a pull request, keep it focused and run the tests above. Please do not add analytics, remote code, or extra host permissions without a very good reason. This project is deliberately small.
+Bug reports and ideas are welcome in [Issues](https://github.com/codingismynewgaming/youtube-attention-cleaner/issues). 
 
 ## Support
 
@@ -137,18 +112,3 @@ If the extension saves you some frustration, I am glad. Feedback helps more than
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-<details>
-<summary>Deutsch</summary>
-
-Videokacheln, an denen du auf YouTube schon vorbeigescrollt bist, werden abgeblendet. Die Seite selbst bleibt. "Gesehen" heißt hier: die Kachel war zwei Sekunden im Bild und danach zwei Sekunden wieder draußen. Auf einer Shorts Seite reicht es, wenn ein Short zwei Sekunden zu sehen war. Das ist nicht der YouTube Verlauf.
-
-Geklickte Videos bleiben klar. Der Player wird nicht abgeblendet. Die Stärke stellst du im Popup ein, von 0 bis 100 Prozent. Einen Schalter zum Ausblenden aus dem Feed gibt es nicht.
-
-Installieren: [Chrome](https://chromewebstore.google.com/detail/dim-+-filter-seen-youtube/idefplgokaljonmomjlnffdafbkeghdc), [Edge](https://microsoftedge.microsoft.com/addons/detail/dim-filter-seen-youtube/elninnhnjkgnijodneiadkkhhgcmpooj), [Firefox](https://addons.mozilla.org/firefox/addon/youtube-attention-cleaner/).
-
-Alles bleibt im lokalen Speicher des Browsers. Gesehene Einträge und die Markierung für angeklickte Videos laufen nach 65 Tagen ab. Die Einstellungen bleiben, bis du sie änderst. Details stehen in der englischen [PRIVACY.md](PRIVACY.md).
-
-Fragen und Fehler: [Issues](https://github.com/codingismynewgaming/youtube-attention-cleaner/issues).
-
-</details>
