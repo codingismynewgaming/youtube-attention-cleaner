@@ -2,7 +2,15 @@
 
 <img src="app-files/chrome/icons/icon-128.png" alt="Dim + Filter Seen YouTube Videos icon" width="88" height="88" />
 
+<p align="center">
+  <img src="docs/dim-filter-demo.gif" alt="Seen YouTube videos turn grey while you scroll" width="400">
+</p>
+
 # Dim + Filter Seen YouTube Videos
+
+Videos you already watched turn grey, so the new ones stand out. Free, open source, no account.
+
+[Watch the 20 second demo with sound](https://www.youtube.com/watch?v=J3AU0Vvn8k4)
 
 *(formerly YouTube Attention Cleaner)*
 
