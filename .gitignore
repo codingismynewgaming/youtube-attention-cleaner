@@ -16,6 +16,8 @@ app-files/firefox/.amo-upload-uuid
 !docs/
 !docs/*.md
 !docs/*.json
+!docs/dim-filter-demo.gif
+!docs/dim-filter-demo-readme.mp4
 !docs/screenshots/
 !docs/screenshots/**
 !docs/store-assets/
